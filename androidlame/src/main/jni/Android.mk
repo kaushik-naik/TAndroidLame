@@ -28,4 +28,7 @@ LOCAL_PATH := $(call my-dir)
     LOCAL_LDLIBS := -llog
     LOCAL_CFLAGS = -DSTDC_HEADERS
 
+    # Add 16KB page alignment for modern Android devices
+    LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384
+
     include $(BUILD_SHARED_LIBRARY)
