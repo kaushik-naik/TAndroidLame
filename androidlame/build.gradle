@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
@@ -39,10 +40,81 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+}
+
+// Create source jar task
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
+// Ensure the AAR is built before publishing
+tasks.whenTaskAdded { task ->
+    if (task.name == 'publishReleasePublicationToMavenLocal') {
+        task.dependsOn 'bundleReleaseAar'
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // Use the bundleReleaseAar task to get the AAR file
+                groupId = 'com.github.kaushik-naik'
+                artifactId = 'TAndroidLame'
+                version = '1.2'
+                
+                // The AAR artifact
+                artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+                
+                // Include sources
+                artifact androidSourcesJar
+                
+                // Include dependencies in the POM
+                pom.withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+                    
+                    // Add all implementation dependencies
+                    configurations.implementation.allDependencies.each { dependency ->
+                        if (dependency.group != null && dependency.name != null && dependency.version != null) {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', dependency.group)
+                            dependencyNode.appendNode('artifactId', dependency.name)
+                            dependencyNode.appendNode('version', dependency.version)
+                        }
+                    }
+                    
+                    // Add the rest of the POM configuration
+                    asNode().children().last() + {
+                        resolveStrategy = Closure.DELEGATE_FIRST
+                        name 'TAndroidLame'
+                        description 'A powerful and easy-to-use Android wrapper around LAME MP3 encoder'
+                        url 'https://github.com/kaushik-naik/TAndroidLame'
+                        
+                        licenses {
+                            license {
+                                name 'GNU General Public License v3.0'
+                                url 'https://www.gnu.org/licenses/gpl-3.0.html'
+                            }
+                        }
+                        
+                        developers {
+
+                        }
+                        
+                        scm {
+                            connection 'scm:git:github.com/kaushik-naik/TAndroidLame.git'
+                            developerConnection 'scm:git:ssh://github.com/kaushik-naik/TAndroidLame.git'
+                            url 'https://github.com/kaushik-naik/TAndroidLame/tree/main'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,0 +1,13 @@
+jdk: openjdk17
+
+before_install:
+  - chmod +x gradlew
+  - ./gradlew clean
+
+install:
+  - ./gradlew :androidlame:assembleRelease
+  - ./gradlew :androidlame:generatePomFileForReleasePublication
+  - ./gradlew :androidlame:publishReleasePublicationToMavenLocal
+
+build_commands:
+  - ./gradlew :androidlame:publishToMavenLocal
