@@ -53,6 +53,13 @@ task androidSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
+// Ensure the AAR is built before publishing
+tasks.whenTaskAdded { task ->
+    if (task.name == 'publishReleasePublicationToMavenLocal') {
+        task.dependsOn 'bundleReleaseAar'
+    }
+}
+
 afterEvaluate {
     publishing {
         publications {

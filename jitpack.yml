@@ -1,13 +1,12 @@
-jdk:
-  - openjdk17
+jdk: openjdk17
 
 before_install:
   - chmod +x gradlew
   - ./gradlew clean
-  
-build_commands:
-  - ./gradlew :androidlame:assembleRelease :androidlame:generatePublishConfig
-  - ./gradlew :androidlame:publishToMavenLocal
 
-jdk_switcher:
-  - openjdk17
+install:
+  - ./gradlew :androidlame:assembleRelease
+  - ./gradlew :androidlame:generatePublishConfig
+
+build_commands:
+  - ./gradlew :androidlame:publishToMavenLocal
