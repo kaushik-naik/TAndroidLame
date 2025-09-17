@@ -104,11 +104,7 @@ afterEvaluate {
                         }
                         
                         developers {
-                            developer {
-                                id 'kaushik-naik'
-                                name 'Kaushik Naik'
-                                email 'kaushiknaik@gmail.com'
-                            }
+
                         }
                         
                         scm {
