@@ -6,7 +6,8 @@ before_install:
 
 install:
   - ./gradlew :androidlame:assembleRelease
-  - ./gradlew :androidlame:generatePublishConfig
+  - ./gradlew :androidlame:generatePomFileForReleasePublication
+  - ./gradlew :androidlame:publishReleasePublicationToMavenLocal
 
 build_commands:
   - ./gradlew :androidlame:publishToMavenLocal
