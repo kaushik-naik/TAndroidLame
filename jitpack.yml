@@ -1,0 +1,12 @@
+jdk:
+  - openjdk17
+
+before_install:
+  - ./gradlew clean
+  
+build_commands:
+  - ./gradlew :androidlame:assembleRelease
+  - ./gradlew :androidlame:generatePomFileForReleasePublication
+
+jdk_switcher:
+  - openjdk17
